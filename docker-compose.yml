@@ -1,0 +1,10 @@
+services:
+  commiter-ai:
+    build: .
+    ports:
+      - "5001:5000"
+    environment:
+      - FLASK_APP=app.py
+      - FLASK_ENV=production
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - GOOGLE_MODEL_NAME=${GOOGLE_MODEL_NAME}
