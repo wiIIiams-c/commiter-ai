@@ -8,6 +8,7 @@ load_dotenv()
 
 GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
 GOOGLE_MODEL_NAME = os.getenv('GOOGLE_MODEL_NAME')
+REPOS_BASE_PATH = '/repos'
 
 genai.configure(api_key=GOOGLE_API_KEY)
 
@@ -15,6 +16,13 @@ model = genai.GenerativeModel(GOOGLE_MODEL_NAME)
 
 def get_git_changes(repo_path=None, branch='main'):
     if repo_path:
+        # Handle both absolute paths and relative paths within REPOS_BASE_PATH
+        if not repo_path.startswith('/'):
+            repo_path = os.path.join(REPOS_BASE_PATH, repo_path)
+        
+        if not os.path.exists(repo_path):
+            raise ValueError(f"Repository path not found: {repo_path}")
+            
         os.chdir(repo_path)
     
     # Get staged changes
