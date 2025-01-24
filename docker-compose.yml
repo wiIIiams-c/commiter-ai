@@ -4,7 +4,7 @@ services:
     ports:
       - "5001:5000"
     volumes:
-      - /Volumes/SSD_240/desarrollos:/repos
+      - ${REPO_PROJECTS_PATH}:/repos
     environment:
       - FLASK_APP=app.py
       - FLASK_ENV=production
