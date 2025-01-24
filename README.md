@@ -14,7 +14,7 @@ To use this project, you'll need to obtain an API key from Google AI Studio. Fol
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/your-username/commiter-ai.git
+   git clone https://github.com/wiIIiams-c/commiter-ai.git
    ```
 2. **Navigate to the project directory:**
    ```bash
