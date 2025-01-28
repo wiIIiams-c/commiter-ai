@@ -69,7 +69,6 @@ def generate_commit_message(repo_path=None, branch='main'):
     3. Add detailed bullet points of changes
     4. Mention any breaking changes
     5. Reference related issues if detected in the changes
-    6. Answer in chilean human spanish language
     """
     
     return model.generate_content(prompt)
