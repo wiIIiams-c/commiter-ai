@@ -10,7 +10,7 @@ def home():
 @app.route('/generate', methods=['POST'])
 def generate():
     repo_path = request.form.get('repo_path')
-    branch = request.form.get('branch', 'main')
+    branch = request.form.get('branch') or 'main'
     
     try:
         commit_message = generate_commit_message(repo_path, branch).text

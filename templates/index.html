@@ -36,8 +36,8 @@
                     <input type="text" placeholder="/repos/<rest-of-repo-path>" class="form-control" id="repoPath" name="repo_path" required>
                 </div>
                 <div class="mb-3">
-                    <label for="branch" class="form-label">Branch Name</label>
-                    <input type="text" class="form-control" id="branch" name="branch" value="main">
+                    <label for="branch" class="form-label">Branch Name (defaults to main)</label>
+                    <input type="text" class="form-control" id="branch" name="branch" placeholder="main">
                 </div>
                 <button type="submit" class="btn btn-primary">Generate Commit Message</button>
             </form>
@@ -56,8 +56,10 @@
                 const formData = new FormData(e.target);
                 const resultDiv = document.getElementById('result');
                 const loader = document.getElementById('loader');
+                const submitButton = e.target.querySelector('button[type="submit"]');
                 
                 try {
+                    submitButton.disabled = true;
                     loader.style.display = 'block';
                     resultDiv.textContent = '';
                     
@@ -75,6 +77,7 @@
                 } catch (error) {
                     resultDiv.textContent = 'Error: ' + error.message;
                 } finally {
+                    submitButton.disabled = false;
                     loader.style.display = 'none';
                 }
             });
