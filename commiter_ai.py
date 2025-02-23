@@ -14,7 +14,12 @@ genai.configure(api_key=GOOGLE_API_KEY)
 
 model = genai.GenerativeModel(GOOGLE_MODEL_NAME)
 
-def get_git_changes(repo_path=None, branch='main'):
+def get_current_branch():
+    result = subprocess.run(["git", "rev-parse", "--abbrev-ref", "HEAD"], 
+                          capture_output=True, text=True)
+    return result.stdout.strip()
+
+def get_git_changes(repo_path=None, branch=None):
     if repo_path:
         # Handle both absolute paths and relative paths within REPOS_BASE_PATH
         if not repo_path.startswith('/'):
@@ -24,6 +29,9 @@ def get_git_changes(repo_path=None, branch='main'):
             raise ValueError(f"Repository path not found: {repo_path}")
             
         os.chdir(repo_path)
+    
+    if branch is None:
+        branch = get_current_branch()
     
     # Get staged changes
     staged_changes = subprocess.run(["git", "diff", "--cached"], capture_output=True, text=True).stdout
@@ -45,11 +53,14 @@ def get_git_changes(repo_path=None, branch='main'):
         'branch_diff': branch_diff
     }
 
-def generate_commit_message(repo_path=None, branch='main'):
+def generate_commit_message(repo_path=None, branch=None):
     changes = get_git_changes(repo_path, branch)
+    current_branch = get_current_branch()
     
     prompt = f"""You are an expert at creating detailed github commit messages.
     Generate a comprehensive commit message based on the following changes:
+    
+    Current Branch: {current_branch}
     
     Staged Changes:
     {changes['staged']}
@@ -60,7 +71,7 @@ def generate_commit_message(repo_path=None, branch='main'):
     Untracked Files:
     {changes['untracked']}
     
-    Differences from {branch} branch:
+    Differences from {branch if branch else current_branch} branch:
     {changes['branch_diff']}
     
     Format the commit message following these rules:
@@ -76,7 +87,7 @@ def generate_commit_message(repo_path=None, branch='main'):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Generate detailed commit messages for git changes')
     parser.add_argument('--path', type=str, help='Path to git repository')
-    parser.add_argument('--branch', type=str, default='main', help='Branch to compare against')
+    parser.add_argument('--branch', type=str, help='Branch to compare against (defaults to current branch)')
     args = parser.parse_args()
     
     print(generate_commit_message(args.path, args.branch).text)
